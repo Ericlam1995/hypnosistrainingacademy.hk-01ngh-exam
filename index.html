@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>催眠考試抽籤系統</title>
+    <style>
+        body {
+            font-family: 'PingFang HK', 'Microsoft JhengHei', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+        }
+        .step-info { color: #888; font-size: 14px; margin-bottom: 10px; }
+        h1 { color: #2c3e50; margin: 0 0 20px 0; font-size: 28px; }
+        .result-box {
+            background: #f8f9fa;
+            border: 3px solid #e9ecef;
+            border-radius: 15px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        button:hover { background-color: #2980b9; transform: translateY(-2px); }
+        button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+        .final-msg { color: #27ae60; font-size: 24px; font-weight: bold; margin-top: 20px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="card" id="mainCard">
+    <div class="step-info" id="stepInfo">題目 1 / 4</div>
+    <h1 id="questionTitle">1. 催眠師</h1>
+    
+    <div class="result-box" id="display">點擊按鈕開始</div>
+    
+    <button onclick="handleAction()" id="actionBtn">開始抽籤</button>
+    <div class="final-msg" id="finalMsg">準備開始考試</div>
+</div>
+
+<script>
+    const data = [
+        { title: "1. 催眠師", list: ["Vicky", "Ben", "Alex", "Agnes", "Daisy"] },
+        { title: "2. 個案", list: ["Vicky", "Ben", "Alex", "Agnes", "Daisy"] },
+        { title: "3. 導入法", list: ["Dave Elements", "Dr. Flowers"] },
+        { title: "4. 建議", list: ["內在小孩", "內在智慧"] }
+    ];
+
+    let currentStep = 0;
+    let isRolling = false;
+    let timer;
+
+    function handleAction() {
+        const btn = document.getElementById('actionBtn');
+        const display = document.getElementById('display');
+        
+        if (btn.innerText === "開始抽籤") {
+            startRoll();
+        } else if (btn.innerText === "停止") {
+            stopRoll();
+        } else if (btn.innerText === "下一個題目") {
+            nextStep();
+        }
+    }
+
+    function startRoll() {
+        isRolling = true;
+        const btn = document.getElementById('actionBtn');
+        const display = document.getElementById('display');
+        const pool = data[currentStep].list;
+        
+        btn.innerText = "停止";
+        timer = setInterval(() => {
+            const random = pool[Math.floor(Math.random() * pool.length)];
+            display.innerText = random;
+        }, 50);
+    }
+
+    function stopRoll() {
+        clearInterval(timer);
+        isRolling = false;
+        const btn = document.getElementById('actionBtn');
+        const display = document.getElementById('display');
+        
+        if (currentStep < data.length - 1) {
+            btn.innerText = "下一個題目";
+        } else {
+            btn.style.display = 'none';
+            document.getElementById('finalMsg').style.display = 'block';
+        }
+    }
+
+    function nextStep() {
+        currentStep++;
+        document.getElementById('stepInfo').innerText = `題目 ${currentStep + 1} / 4`;
+        document.getElementById('questionTitle').innerText = data[currentStep].title;
+        document.getElementById('display').innerText = "準備抽籤";
+        document.getElementById('actionBtn').innerText = "開始抽籤";
+    }
+</script>
+
+</body>
+</html>
